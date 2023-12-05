@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibExcel", "LibExcel\LibExcel.csproj", "{DFFFCDFD-F87F-4CFF-A05C-4418D3C5F314}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLib", "TestLib\TestLib.csproj", "{C0CD8237-FE8D-44C5-9E59-FFC1F8C566B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFFFCDFD-F87F-4CFF-A05C-4418D3C5F314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFFFCDFD-F87F-4CFF-A05C-4418D3C5F314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFFFCDFD-F87F-4CFF-A05C-4418D3C5F314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFFFCDFD-F87F-4CFF-A05C-4418D3C5F314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0CD8237-FE8D-44C5-9E59-FFC1F8C566B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0CD8237-FE8D-44C5-9E59-FFC1F8C566B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0CD8237-FE8D-44C5-9E59-FFC1F8C566B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0CD8237-FE8D-44C5-9E59-FFC1F8C566B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {92B1F5B8-B9E4-445B-B16A-C494A87ACC48}
+	EndGlobalSection
+EndGlobal
