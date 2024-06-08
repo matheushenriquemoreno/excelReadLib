@@ -1,5 +1,6 @@
 ﻿using LibExcel.Atributos;
 using LibExcel.Entidades;
+using LibExcel.Entidades.Exceptions;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -14,26 +15,29 @@ namespace LibExcel.Services
 {
     public class LeitorExcell<T> where T : new()
     {
+
+        public int PosicaoPlanilha { get; set; } = 0;
+        public int LinhaHeader { get; set; } = 1;
+
         public LeitorExcell()
         {
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
         }
 
-        public List<T> ObterDadosDoExcel(string caminhoPlanilha, int posicaoPlanilha = 0)
+        private (ExcelWorksheet excell, List<ColunasExcell> colunas) ObterDadosHeaderExcel(string caminhoPlanilha)
         {
-            var dados = new List<T>();
+            if (!File.Exists(caminhoPlanilha))
+                throw new ExcelNaoEncontrado();
 
-            using var package = new ExcelPackage(new FileInfo(caminhoPlanilha));
+            var package = new ExcelPackage(new FileInfo(caminhoPlanilha));
 
-            ExcelWorksheet worksheet = package.Workbook.Worksheets[posicaoPlanilha];
+            ExcelWorksheet worksheet = package.Workbook.Worksheets[PosicaoPlanilha];
 
             var colunasHeader = new List<ColunasExcell>();
 
-            // A primeira linha contém os nomes dos campos
-            int rowCampo = 1;
             for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
             {
-                string campo = worksheet.Cells[rowCampo, col].Text;
+                string campo = worksheet.Cells[LinhaHeader, col].Text;
 
                 if (string.IsNullOrEmpty(campo))
                     break;
@@ -41,30 +45,41 @@ namespace LibExcel.Services
                 colunasHeader.Add(new ColunasExcell(campo, col));
             }
 
-            int linhaDados = rowCampo + 1;
+            return(worksheet, colunasHeader);
+        }
+    
+        public List<T> ObterDadosDoExcel(string caminhoPlanilha)
+        {
+            var dados = new List<T>();
+
+            var (worksheet, colunasHeader) = ObterDadosHeaderExcel(caminhoPlanilha);
+
+            int linhaDados = LinhaHeader + 1;
+            PropertyInfo[] campos = typeof(T).GetProperties();
+
             for (int row = linhaDados; row <= worksheet.Dimension.End.Row; row++)
             {
                 var objeto = new T();
-
-                // Preencher os valores do objeto com base nos nomes dos campos
+                
                 foreach (var coluna in colunasHeader)
                 {
                     string valor = worksheet.Cells[row, coluna.Index].Text;
 
-                    PreencherObjeto(coluna, objeto, valor);
+                    PreencherObjeto(campos, coluna, objeto, valor);
                 }
 
                 dados.Add(objeto);
             }
 
+            worksheet.Dispose();
+
             return dados;
         }
 
 
-        private void PreencherObjeto(ColunasExcell coluna, object entidade, object value)
+        private void PreencherObjeto(PropertyInfo[] campos, ColunasExcell coluna, object entidade, object value)
         {
-            var campos = typeof(T).GetProperties();
-
+         
             foreach (PropertyInfo campo in campos)
             {
                 if (!campo.CanWrite)
@@ -87,18 +102,21 @@ namespace LibExcel.Services
                     PreencherObjeto(campo, entidade, value);
                     break;
                 }
-
             }
         }
 
         private bool PossuiAtributoIndex(PropertyInfo campo)
         {
-            throw new NotImplementedException();
+            var result = (IndexHeaderAttribute)campo.GetCustomAttributes(typeof(IndexHeaderAttribute), false).FirstOrDefault();
+
+            return result is not null ? true : false;
         }
 
         private bool EhCampoIndex(PropertyInfo campo, int index)
         {
-            throw new NotImplementedException();
+            var result = (IndexHeaderAttribute)campo.GetCustomAttributes(typeof(IndexHeaderAttribute), false).FirstOrDefault();
+
+            return result.IndexColuna == index;
         }
 
         public void PreencherObjeto(PropertyInfo campo, object entidade, object value)

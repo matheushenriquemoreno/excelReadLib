@@ -11,4 +11,13 @@
     <ProjectReference Include="..\LibExcel\LibExcel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Testes\Teste1.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Testes\Teste2.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
